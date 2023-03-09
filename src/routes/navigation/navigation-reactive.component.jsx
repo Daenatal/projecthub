@@ -1,3 +1,4 @@
+import React from 'react';
 import { Fragment, useEffect } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 
@@ -26,12 +27,15 @@ import { CSSTransition } from 'react-transition-group';
 
 const DropDownMenu = () => {
 
+    const [open, setOpen] = useState(true);
+
     const [activeMenu, setActiveMenu] = useState('main');
     const [menuHeight, setMenuHeight] = useState(null);
-    const dropdownRef = useRef(null);
+    const nodeRef = React.useRef(null);
+    const nodeRef2 = React.useRef(null);
 
     useEffect(() => {
-        setMenuHeight(dropdownRef.current?.firstChild.offsetHeight)
+        setMenuHeight(nodeRef.current?.firstChild.offsetHeight)
     }, [])
 
     function calcHeight (el)  {
@@ -49,15 +53,17 @@ const DropDownMenu = () => {
             </a>
         ); 
     }
-
-    return (
-        <div className='dropdown' style={{height: menuHeight}} ref={dropdownRef}>
+    if (open){
+        return (
+       
+            <div className='dropdown' style={{height: menuHeight}} onMouseLeave={() => setOpen(!open)}>
             <CSSTransition 
                 in={activeMenu === 'main'} 
                 unmountOnExit 
                 timeout={500} 
                 className="menu-primary"
-                onEnter={calcHeight}>
+                onEnter={calcHeight}
+                nodeRef={nodeRef}>
                 <div className="menu">
                     <DropDownItem>My Profile</DropDownItem>
                     <DropDownItem 
@@ -74,7 +80,8 @@ const DropDownMenu = () => {
                 in={activeMenu === 'settings'} 
                 unmountOnExit timeout={500} 
                 className="menu-secondary"
-                onEnter={calcHeight}>
+                onEnter={calcHeight}
+                nodeRef={nodeRef}>
                     <div className="menu">
                         <DropDownItem>My Profile</DropDownItem>
                         <DropDownItem 
@@ -91,7 +98,10 @@ const DropDownMenu = () => {
                     </div>
             </CSSTransition> 
         </div>
-    );
+        
+        );
+    }
+    
 }
 
 
@@ -115,7 +125,10 @@ function NavItem(props) {
 
     return (
         <li className='nav-item'>
-            <a href="#" className='icon-button' onClick={() => setOpen(!open)}>
+            <a href="#" className='icon-button' 
+                onClick={() => setOpen(!open)}
+                onMouseEnter={() => setOpen(!open)}
+                >
                 {props.icon}
             </a>
             {open && props.children}
