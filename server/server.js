@@ -1,9 +1,37 @@
 
 const express = require('express');
 
+const monsterRouter = require('./routes/monsters.route');
+const messagesRouter = require('./routes/messages.route');
+
 const app = express();
 
 const PORT = 3000;
+
+// app.use(function(req, res, next) {
+    
+// })
+
+app.use((req, res, next) => {
+    const start = Date.now();
+    next();
+    //actions go here...on the response return up the chain
+    const delta = Date.now() - start;
+    console.log(`${req.method} ${req.baseUrl}${req.url} ${delta}ms`);
+});
+
+app.use(express.json()); //says content body to application/json when the request received has the json header
+
+app.use('/monsters', monsterRouter); //mounting the router on the app object
+app.use('/messages', messagesRouter);
+
+app.listen(PORT, () => {
+    console.log(`Listening on ${PORT}...`);
+});
+
+
+
+/*
 
 app.get('/', (req, res) => {
     res.send({
@@ -12,19 +40,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/messages', (req, res) => {
-    res.send('<ul><li>Hello Hunter!</li></ul>');
-});
-
-app.post('/messages', (req, res) => {
-    console.log('Updating Messages');
-});
-
-app.listen(PORT, () => {
-    console.log(`Listening on ${PORT}...`);
-});
-
-/*const http = require('http'); <---using node built in modules
+const http = require('http'); <---using node built in modules
 
 const PORT = 3000;
 
