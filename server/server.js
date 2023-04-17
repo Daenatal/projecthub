@@ -1,5 +1,6 @@
 
 const express = require('express');
+const path = require('path');
 
 const monsterRouter = require('./routes/monsters.route');
 const messagesRouter = require('./routes/messages.route');
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
     console.log(`${req.method} ${req.baseUrl}${req.url} ${delta}ms`);
 });
 
+app.use('/site', express.static(path.join(__dirname, 'public')));
 app.use(express.json()); //says content body to application/json when the request received has the json header
 
 app.use('/monsters', monsterRouter); //mounting the router on the app object
